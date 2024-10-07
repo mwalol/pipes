@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from schemas import OpenAIChatMessage
 import requests
 import os
+import json
 
 class Pipeline:
     class Valves(BaseModel):
@@ -32,7 +33,7 @@ class Pipeline:
         url = "http://192.168.88.23:5000/search"
         headers = {
             "Content-Type": "application/json",
-            "User-Agent": "pipeline/0"
+            "User-Agent": "insomnia/2023.5.8"
         }
         payload = {"query": user_message}
 
@@ -42,9 +43,18 @@ class Pipeline:
         context = None
         if results:
             first_result = results[0]
-            context = first_result.get('document', "No information found")
-            print(f"Retrieved context: {context}")
-        else:
-            context = "No information found"
+            document = first_result.get('document', "No information found")
+            metadata = first_result.get('metadata', {})
 
-        return context
+            context = {
+                "document": document,
+                "metadata": metadata
+            }
+            print(f"Retrieved context: {json.dumps(context, indent=2)}")
+        else:
+            context = {
+                "document": "No information found",
+                "metadata": {}
+            }
+
+        return json.dumps(context, indent=2)
