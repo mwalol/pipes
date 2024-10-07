@@ -1,71 +1,69 @@
 from typing import List, Union, Generator, Iterator
-from schemas import OpenAIChatMessage
 from pydantic import BaseModel
 import os
 import requests
 import json
+
+class OpenAIChatMessage(BaseModel):
+    role: str
+    content: str
 
 class Pipeline:
     class Valves(BaseModel):
         OPENAI_API_BASE_URL: str = "http://192.168.88.193:8000/v1"
         OPENAI_API_KEY: str = ""
         VECTOR_DB_URL: str = "http://192.168.88.23:5000/search"
+        MODEL_ID: str = "qwen32b-coder"  # Added model_id as a variable
 
     def __init__(self):
         self.type = "manifold"
         self.name = "OpenAI Pipeline with Vector Database"
         
         self.valves = self.Valves(
-            **{
-                "OPENAI_API_KEY": os.getenv(
-                    "OPENAI_API_KEY", "your-openai-api-key-here"
-                ),
-                "model_id": os.getenv(
-                    "model_id", "qwen32b-coder"
-                ),
-                "VECTOR_DB_URL": "http://192.168.88.23:5000/search"
-            }
+            OPENAI_API_KEY=os.getenv(
+                "OPENAI_API_KEY", "your-openai-api-key-here"
+            ),
+            MODEL_ID=os.getenv(
+                "MODEL_ID", "qwen32b-coder"
+            ),
+            VECTOR_DB_URL="http://192.168.88.23:5000/search"
         )
 
         self.pipelines = self.get_openai_models()
-        pass
 
     async def on_startup(self):
         print(f"on_startup:{__name__}")
-        pass
 
     async def on_shutdown(self):
         print(f"on_shutdown:{__name__}")
-        pass
 
     async def on_valves_updated(self):
         print(f"on_valves_updated:{__name__}")
         self.pipelines = self.get_openai_models()
-        pass
 
     def get_openai_models(self):
         if self.valves.OPENAI_API_KEY:
             try:
-                headers = {}
-                headers["Authorization"] = f"Bearer {self.valves.OPENAI_API_KEY}"
-                headers["Content-Type"] = "application/json"
+                headers = {
+                    "Authorization": f"Bearer {self.valves.OPENAI_API_KEY}",
+                    "Content-Type": "application/json"
+                }
 
-                r = requests.get(
+                response = requests.get(
                     f"{self.valves.OPENAI_API_BASE_URL}/models", headers=headers
                 )
 
-                models = r.json()
+                models = response.json()
                 return [
                     {
                         "id": model["id"],
                         "name": model["name"] if "name" in model else model["id"],
                     }
                     for model in models["data"]
-                    if "gpt" in model["id"]
                 ]
 
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"Error fetching models: {e}")
                 return [
                     {
                         "id": "error",
@@ -111,9 +109,10 @@ class Pipeline:
         context = self.query_vector_database(user_message)
         print(f"Retrieved context: {json.dumps(context, indent=2)}")
 
-        headers = {}
-        headers["Authorization"] = f"Bearer {self.valves.OPENAI_API_KEY}"
-        headers["Content-Type"] = "application/json"
+        headers = {
+            "Authorization": f"Bearer {self.valves.OPENAI_API_KEY}",
+            "Content-Type": "application/json"
+        }
 
         payload = {**body, "model": model_id}
 
@@ -131,19 +130,18 @@ class Pipeline:
         print(payload)
 
         try:
-            r = requests.post(
-                model: self.valves.model_id,
-                url=f"{self.valves.OPENAI_API_BASE_URL}/chat/completions",
+            response = requests.post(
+                f"{self.valves.OPENAI_API_BASE_URL}/chat/completions",
                 json=payload,
                 headers=headers,
                 stream=True,
             )
 
-            r.raise_for_status()
+            response.raise_for_status()
 
             if body.get("stream"):
-                return r.iter_lines()
+                return response.iter_lines()
             else:
-                return r.json()
+                return response.json()
         except Exception as e:
             return f"Error: {e}"
