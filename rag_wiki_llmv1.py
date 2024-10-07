@@ -14,11 +14,14 @@ class Pipeline:
     def __init__(self):
         self.type = "manifold"
         self.name = "OpenAI Pipeline with Vector Database"
-
+        
         self.valves = self.Valves(
             **{
                 "OPENAI_API_KEY": os.getenv(
                     "OPENAI_API_KEY", "your-openai-api-key-here"
+                ),
+                "model_id": os.getenv(
+                    "model_id", "qwen32b-coder"
                 ),
                 "VECTOR_DB_URL": "http://192.168.88.23:5000/search"
             }
@@ -129,6 +132,7 @@ class Pipeline:
 
         try:
             r = requests.post(
+                model: self.valves.model_id,
                 url=f"{self.valves.OPENAI_API_BASE_URL}/chat/completions",
                 json=payload,
                 headers=headers,
