@@ -24,11 +24,13 @@ class Pipeline:
         self, user_message: str, model_id: str, messages: List[dict], body: dict
     ) -> Union[str, Generator, Iterator]:
         print(f"pipe:{__name__}")
-        print(f"body:{body}")
+        
         if body.get("title", False):
             print("Title Generation")
             return "Vector Database Pipeline"
-
+        print(f"wayhya")
+        print(f"body: {body}")
+        
         url = "http://192.168.88.23:5000/search"
         headers = {
             "Content-Type": "application/json",
