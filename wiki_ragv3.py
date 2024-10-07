@@ -29,7 +29,7 @@ class Pipeline:
         if body.get("title", False):
             print("Title Generation")
             return "Vector Database Pipeline"
-
+        print(f"Body: {body}")
         url = "http://192.168.88.23:5000/search"
         headers = {
             "Content-Type": "application/json",
