@@ -92,7 +92,7 @@ class Pipeline:
         for char in content:
             if current_size + len(char) > chunk_size and current_chunk:
                 yield current_chunk
-                time.sleep(random.uniform(0.01, 0.05))  # Random delay to simulate typing
+                time.sleep(random.uniform(0.005, 0.01))  # Random delay to simulate typing
                 current_chunk = ''
                 current_size = 0
             
@@ -101,7 +101,7 @@ class Pipeline:
 
         if current_chunk:
             yield current_chunk
-            time.sleep(random.uniform(0.01, 0.05))  # Random delay after the last chunk too
+            time.sleep(random.uniform(0.005, 0.01))  # Random delay after the last chunk too
 
 
 
