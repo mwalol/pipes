@@ -82,6 +82,34 @@ class Pipeline:
         """
         return a / b
 
+
+    def create_content_stream(self, content: str, chunk_size: int = 5) -> Generator[str, None, None]:
+        """
+        Create a generator that yields chunks of the given content, splitting by words.
+        
+        Args:
+            content (str): The string content to be streamed.
+            chunk_size (int): The approximate size of each chunk. Defaults to 100.
+        
+        Yields:
+            str: Chunks of the content string, split by words.
+        """
+        words = content.split()
+        current_chunk = []
+        current_size = 0
+    
+        for word in words:
+            if current_size + len(word) + 1 > chunk_size and current_chunk:
+                yield ' '.join(current_chunk)
+                current_chunk = []
+                current_size = 0
+            
+            current_chunk.append(word)
+            current_size += len(word) + 1  # +1 for the space
+    
+        if current_chunk:
+            yield ' '.join(current_chunk)
+            
     def DuckDuckGoSearchRun(self) -> str:
         """
         Get the result from search on the internet using DuckDuckGo.
