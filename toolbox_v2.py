@@ -12,8 +12,10 @@ from typing import List, Union, Generator, Iterator
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain_community.tools import DuckDuckGoSearchRun
-from langgraph.graph import MessagesState, StateGraph, START, ToolNode, tools_condition
+from langgraph.graph import MessagesState, StateGraph, START
 from langchain_core.messages import HumanMessage, SystemMessage
+from langgraph.prebuilt import tools_condition
+from langgraph.prebuilt import ToolNode
 
 class Pipeline:
 
