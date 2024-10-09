@@ -82,6 +82,23 @@ class Pipeline:
         """
         return a / b
 
+    def create_content_stream(content: str, chunk_size: int = 100):
+        words = content.split()
+        current_chunk = []
+        current_size = 0
+    
+        for word in words:
+            if current_size + len(word) + 1 > chunk_size and current_chunk:
+                yield ' '.join(current_chunk)
+                current_chunk = []
+                current_size = 0
+            
+            current_chunk.append(word)
+            current_size += len(word) + 1  # +1 for the space
+    
+        if current_chunk:
+            yield ' '.join(current_chunk)
+
     def DuckDuckGoSearchRun(self) -> str:
         """
         Get the result from search on the internet using DuckDuckGo.
