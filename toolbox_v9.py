@@ -45,7 +45,7 @@ class Pipeline:
             self.add,
             self.multiply,
             self.divide,
-            self.DuckDuckGoSearchRun()
+            self.DuckDuckGoSearchRun
         ]
 
         self.llm_with_tools = self.llm.bind_tools(self.tools)
