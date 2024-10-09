@@ -82,7 +82,7 @@ class Pipeline:
         """
         return a / b
 
-    def create_content_stream(content: str, chunk_size: int = 100):
+    def create_content_stream(self, content: str, chunk_size: int = 100):
         words = content.split()
         current_chunk = []
         current_size = 0
@@ -148,10 +148,10 @@ class Pipeline:
         
         # If content is already a string, return it as a stream
         if isinstance(content, str):
-            return create_content_stream(content)
+            return self.create_content_stream(content)
         # If content is already a Generator or Iterator, return it as is
         elif isinstance(content, (Generator, Iterator)):
             return content
         # If it's neither, convert to string and return as stream
         else:
-            return create_content_stream(str(content))
+            return self.create_content_stream(str(content))
