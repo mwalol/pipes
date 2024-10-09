@@ -82,14 +82,18 @@ class Pipeline:
         """
         return a / b
 
-    def DuckDuckGoSearchRun(self, query) -> string:
-        """usefull to do search on internet using duckduckgo
+    def DuckDuckGoSearchRun(self, query) -> str:
+        """
+        Useful to do search on the internet using DuckDuckGo.
 
         Args:
-            query: text to search
+            query (str): The text to search.
+
+        Returns:
+            str: The result of the search.
         """
         print(f'query: {query}')
-        static_phrase = "madonna was born in 1990"
+        static_phrase = "Madonna was born in 1958"
         return static_phrase
     
     def reasoner(self, state: MessagesState):
