@@ -82,7 +82,7 @@ class Pipeline:
         """
         return a / b
 
-    def create_content_stream(self, content: str, chunk_size: int = 100):
+    def create_content_stream(self, content: str, chunk_size: int = 6):
         words = content.split()
         current_chunk = []
         current_size = 0
