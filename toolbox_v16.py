@@ -82,9 +82,6 @@ class Pipeline:
         """
         return a / b
 
-
-
-            
     def DuckDuckGoSearchRun(self) -> str:
         """
         Get the result from search on the internet using DuckDuckGo.
