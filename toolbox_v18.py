@@ -144,4 +144,14 @@ class Pipeline:
         messages = [human_message]
         messages = self.graph.invoke({"messages": messages})
 
-        return messages['messages'][-1].content
+        content = messages['messages'][-1].content
+        
+        # If content is already a string, return it as a stream
+        if isinstance(content, str):
+            return create_content_stream(content)
+        # If content is already a Generator or Iterator, return it as is
+        elif isinstance(content, (Generator, Iterator)):
+            return content
+        # If it's neither, convert to string and return as stream
+        else:
+            return create_content_stream(str(content))
