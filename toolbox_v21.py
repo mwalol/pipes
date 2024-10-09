@@ -82,22 +82,25 @@ class Pipeline:
         """
         return a / b
 
-    def create_content_stream(self, content: str, chunk_size: int = 6):
+    def create_content_stream(self, content: str, chunk_size: int = 3) -> Generator[str, None, None]:
         words = content.split()
         current_chunk = []
         current_size = 0
-    
+
         for word in words:
-            if current_size + len(word) + 1 > chunk_size and current_chunk:
+            if current_size + len(word) + (1 if current_chunk else 0) > chunk_size and current_chunk:
                 yield ' '.join(current_chunk)
+                time.sleep(random.uniform(0.05, 0.2))  # Random delay to simulate typing
                 current_chunk = []
                 current_size = 0
             
             current_chunk.append(word)
-            current_size += len(word) + 1  # +1 for the space
-    
+            current_size += len(word) + (1 if current_chunk else 0)
+
         if current_chunk:
             yield ' '.join(current_chunk)
+            time.sleep(random.uniform(0.05, 0.2))  # Random delay after the last chunk too
+
 
     def DuckDuckGoSearchRun(self) -> str:
         """
