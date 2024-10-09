@@ -11,7 +11,6 @@ requirements: langchain, langchain_community, langgraph
 from typing import List, Union, Generator, Iterator
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
-from langchain_community.tools import DuckDuckGoSearchRun
 from langgraph.graph import MessagesState, StateGraph, START
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.prebuilt import tools_condition
@@ -83,6 +82,10 @@ class Pipeline:
         """
         return a / b
 
+    def DuckDuckGoSearchRun(query):
+        static_phrase = "madonna was born in 1990"
+        return static_phrase
+    
     def reasoner(self, state: MessagesState):
         return {"messages": [self.llm_with_tools.invoke([self.sys_msg] + state["messages"])]}
 
