@@ -82,7 +82,7 @@ class Pipeline:
         """
         return a / b
 
-    def DuckDuckGoSearchRun(self, query):
+    def DuckDuckGoSearchRun(self):
         static_phrase = "madonna was born in 1990"
         return static_phrase
     
