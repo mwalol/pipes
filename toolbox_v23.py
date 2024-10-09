@@ -85,24 +85,24 @@ class Pipeline:
         """
         return a / b
 
-    def create_content_stream(self, content: str, chunk_size: int = 3) -> Generator[str, None, None]:
-        words = content.split()
-        current_chunk = []
+    def create_content_stream(self, content: str, chunk_size: int = 6) -> Generator[str, None, None]:
+        current_chunk = ''
         current_size = 0
 
-        for word in words:
-            if current_size + len(word) + (1 if current_chunk else 0) > chunk_size and current_chunk:
-                yield ' '.join(current_chunk)
-                time.sleep(random.uniform(0.05, 0.2))  # Random delay to simulate typing
-                current_chunk = []
+        for char in content:
+            if current_size + len(char) > chunk_size and current_chunk:
+                yield current_chunk
+                time.sleep(random.uniform(0.01, 0.05))  # Random delay to simulate typing
+                current_chunk = ''
                 current_size = 0
             
-            current_chunk.append(word)
-            current_size += len(word) + (1 if current_chunk else 0)
+            current_chunk += char
+            current_size += len(char)
 
         if current_chunk:
-            yield ' '.join(current_chunk)
-            time.sleep(random.uniform(0.05, 0.2))  # Random delay after the last chunk too
+            yield current_chunk
+            time.sleep(random.uniform(0.01, 0.05))  # Random delay after the last chunk too
+
 
 
     def DuckDuckGoSearchRun(self) -> str:
@@ -152,12 +152,7 @@ class Pipeline:
 
         content = messages['messages'][-1].content
         
-        # If content is already a string, return it as a stream
         if isinstance(content, str):
             return self.create_content_stream(content)
-        # If content is already a Generator or Iterator, return it as is
-        elif isinstance(content, (Generator, Iterator)):
-            return content
-        # If it's neither, convert to string and return as stream
         else:
             return self.create_content_stream(str(content))
