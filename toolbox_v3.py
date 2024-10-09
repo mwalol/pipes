@@ -9,8 +9,7 @@ requirements: langchain, langchain_community, langgraph
 """
 
 from typing import List, Union, Generator, Iterator
-#from pydantic import BaseModel
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain_community.tools import DuckDuckGoSearchRun
 from langgraph.graph import MessagesState, StateGraph, START
